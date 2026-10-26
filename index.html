@@ -27,14 +27,21 @@
       color: #e0e0e0;
       text-align: center;
     }
-    .container {
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
       width: 100%;
-      max-width: 400px;
+      max-width: 440px;
+    }
+    @media (max-width: 400px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
     }
     .btn {
-      width: 100%;
-      padding: 25px 15px;
-      font-size: 1.4rem;
+      padding: 22px 15px;
+      font-size: 1.2rem;
       font-weight: bold;
       color: #ffffff;
       background-color: #1e1e1e;
@@ -44,15 +51,17 @@
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
       transition: all 0.2s ease;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 15px;
+      gap: 10px;
+      text-align: center;
     }
     .btn-icon {
-      font-size: 2rem;
+      font-size: 2.2rem;
     }
     .btn:active {
-      transform: scale(0.96);
+      transform: scale(0.95);
       background-color: #2a2a2a;
       border-color: #3b82f6;
     }
@@ -65,42 +74,50 @@
       font-weight: 500;
     }
     .success { color: #10b981; }
-    .error { color: #ef4444; }
   </style>
 </head>
 <body>
 
   <h1>Garage Tesla</h1>
 
-  <div class="container">
-    <button class="btn" onclick="inviaComando()">
+  <div class="grid">
+    <button class="btn" onclick="inviaComando(URL_LUCE_BOX, 'Luce Box')">
       <span class="btn-icon">💡</span>
       <span>Luce Box</span>
+    </button>
+
+    <button class="btn" onclick="inviaComando(URL_BASCULANTE_BOX, 'Basculante')">
+      <span class="btn-icon">🚗</span>
+      <span>Basculante</span>
     </button>
   </div>
 
   <div id="status" class="status">In attesa...</div>
 
   <script>
-    const URL_LUCE_BOX = "https://www.virtualsmarthome.xyz/url_routine_trigger/activate.php?trigger=67f866e7-72f0-4c6e-b1ed-dfca06733806&token=f65f88a7-dec4-4d25-a1f3-692f08934014&response=html";
+    const URL_LUCE_BOX       = "https://www.virtualsmarthome.xyz/url_routine_trigger/activate.php?trigger=67f866e7-72f0-4c6e-b1ed-dfca06733806&token=f65f88a7-dec4-4d25-a1f3-692f08934014&response=html";
+    const URL_BASCULANTE_BOX = "https://www.virtualsmarthome.xyz/url_routine_trigger/activate.php?trigger=2d069424-9826-4239-9313-5a18954de579&token=0bc3386d-f881-4afb-8bbf-04d5b0aac0e0&response=html";
 
-    function inviaComando() {
+    function inviaComando(url, nomeComando) {
       const statusDiv = document.getElementById("status");
       statusDiv.className = "status";
-      statusDiv.innerText = "Inviando comando...";
+      statusDiv.innerText = "Inviando: " + nomeComando + "...";
 
-      const ping = new Image();
-      ping.onload = ping.onerror = function() {
+      const iframe = document.createElement("iframe");
+      iframe.style.display = "none";
+      iframe.src = url + "&_t=" + new Date().getTime();
+      document.body.appendChild(iframe);
+
+      setTimeout(() => {
         statusDiv.className = "status success";
-        statusDiv.innerText = "✓ Luce Box inviata!";
+        statusDiv.innerText = "✓ " + nomeComando + " inviato!";
         
         setTimeout(() => {
+          document.body.removeChild(iframe);
           statusDiv.className = "status";
           statusDiv.innerText = "In attesa...";
-        }, 3000);
-      };
-
-      ping.src = URL_LUCE_BOX + "&_t=" + new Date().getTime();
+        }, 2000);
+      }, 800);
     }
   </script>
 
