@@ -41,7 +41,7 @@
     }
     .btn {
       padding: 22px 15px;
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       font-weight: bold;
       color: #ffffff;
       background-color: #1e1e1e;
@@ -64,6 +64,12 @@
       transform: scale(0.95);
       background-color: #2a2a2a;
       border-color: #3b82f6;
+    }
+    .btn-alarm-on:active {
+      border-color: #ef4444;
+    }
+    .btn-alarm-off:active {
+      border-color: #10b981;
     }
     .status {
       margin-top: 25px;
@@ -90,6 +96,16 @@
       <span class="btn-icon">🚗</span>
       <span>Basculante</span>
     </button>
+
+    <button class="btn btn-alarm-on" onclick="inviaComando(URL_ALLARME_ON, 'Attiva Allarme')">
+      <span class="btn-icon">🛡️</span>
+      <span>Attiva Allarme</span>
+    </button>
+
+    <button class="btn btn-alarm-off" onclick="inviaComando(URL_ALLARME_OFF, 'Disattiva Allarme')">
+      <span class="btn-icon">🔓</span>
+      <span>Disattiva Allarme</span>
+    </button>
   </div>
 
   <div id="status" class="status">In attesa...</div>
@@ -97,6 +113,8 @@
   <script>
     const URL_LUCE_BOX       = "https://www.virtualsmarthome.xyz/url_routine_trigger/activate.php?trigger=67f866e7-72f0-4c6e-b1ed-dfca06733806&token=f65f88a7-dec4-4d25-a1f3-692f08934014&response=html";
     const URL_BASCULANTE_BOX = "https://www.virtualsmarthome.xyz/url_routine_trigger/activate.php?trigger=2d069424-9826-4239-9313-5a18954de579&token=0bc3386d-f881-4afb-8bbf-04d5b0aac0e0&response=html";
+    const URL_ALLARME_ON     = "https://www.virtualsmarthome.xyz/url_routine_trigger/activate.php?trigger=030c1432-8458-49c8-adbf-4e21bdd952c8&token=2dc25059-1f32-4547-9af1-fb98e95d58b9&response=html";
+    const URL_ALLARME_OFF    = "https://www.virtualsmarthome.xyz/url_routine_trigger/activate.php?trigger=62e856b9-0d18-4742-b4e4-da03914f7731&token=3ee367a1-52f5-4d5b-946e-93cc5fa08206&response=html";
 
     function inviaComando(url, nomeComando) {
       const statusDiv = document.getElementById("status");
