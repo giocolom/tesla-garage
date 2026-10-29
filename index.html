@@ -22,57 +22,83 @@
       padding: 20px;
     }
     h1 {
-      font-size: 1.8rem;
-      margin-bottom: 25px;
+      font-size: 1.6rem;
+      margin-bottom: 20px;
       color: #e0e0e0;
       text-align: center;
     }
+    .container {
+      width: 100%;
+      max-width: 440px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    
+    /* Scenari Principali */
+    .scenarios {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .btn-scenario {
+      padding: 18px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #ffffff;
+      border: 2px solid #333;
+      border-radius: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+      transition: all 0.2s ease;
+    }
+    .btn-apri {
+      background-color: #1b4d3e;
+      border-color: #10b981;
+    }
+    .btn-chiudi {
+      background-color: #4a151b;
+      border-color: #ef4444;
+    }
+
+    /* Comandi Singoli */
     .grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 15px;
-      width: 100%;
-      max-width: 440px;
+      gap: 12px;
+      margin-top: 5px;
     }
-    @media (max-width: 400px) {
-      .grid {
-        grid-template-columns: 1fr;
-      }
-    }
-    .btn {
-      padding: 22px 15px;
-      font-size: 1.1rem;
-      font-weight: bold;
-      color: #ffffff;
+    .btn-single {
+      padding: 16px 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #d1d5db;
       background-color: #1e1e1e;
-      border: 2px solid #333333;
-      border-radius: 16px;
+      border: 1px solid #333333;
+      border-radius: 14px;
       cursor: pointer;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-      transition: all 0.2s ease;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 10px;
-      text-align: center;
+      gap: 8px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+    }
+    
+    .btn-scenario:active, .btn-single:active {
+      transform: scale(0.96);
+      filter: brightness(1.2);
     }
     .btn-icon {
-      font-size: 2.2rem;
+      font-size: 1.8rem;
     }
-    .btn:active {
-      transform: scale(0.95);
-      background-color: #2a2a2a;
-      border-color: #3b82f6;
-    }
-    .btn-alarm-on:active {
-      border-color: #ef4444;
-    }
-    .btn-alarm-off:active {
-      border-color: #10b981;
-    }
+
     .status {
-      margin-top: 25px;
+      margin-top: 20px;
       font-size: 1.1rem;
       min-height: 25px;
       text-align: center;
@@ -86,31 +112,52 @@
 
   <h1>Garage Tesla</h1>
 
-  <div class="grid">
-    <button class="btn" onclick="inviaComando(URL_LUCE_BOX, 'Luce Box')">
-      <span class="btn-icon">💡</span>
-      <span>Luce Box</span>
-    </button>
+  <div class="container">
+    <!-- Pulsanti Macro Scenari -->
+    <div class="scenarios">
+      <button class="btn-scenario btn-apri" onclick="inviaComando(URL_SCENARIO_APRI, 'Scenario APRI BOX')">
+        <span class="btn-icon">🔓</span>
+        <span>APRI BOX (Entrata)</span>
+      </button>
 
-    <button class="btn" onclick="inviaComando(URL_BASCULANTE_BOX, 'Basculante')">
-      <span class="btn-icon">🚗</span>
-      <span>Basculante</span>
-    </button>
+      <button class="btn-scenario btn-chiudi" onclick="inviaComando(URL_SCENARIO_CHIUDI, 'Scenario CHIUDI BOX')">
+        <span class="btn-icon">🔒</span>
+        <span>CHIUDI BOX (Uscita)</span>
+      </button>
+    </div>
 
-    <button class="btn btn-alarm-on" onclick="inviaComando(URL_ALLARME_ON, 'Attiva Allarme')">
-      <span class="btn-icon">🛡️</span>
-      <span>Attiva Allarme</span>
-    </button>
+    <!-- Pulsanti Comandi Singoli -->
+    <div class="grid">
+      <button class="btn-single" onclick="inviaComando(URL_LUCE_BOX, 'Luce Box')">
+        <span class="btn-icon">💡</span>
+        <span>Luce Box</span>
+      </button>
 
-    <button class="btn btn-alarm-off" onclick="inviaComando(URL_ALLARME_OFF, 'Disattiva Allarme')">
-      <span class="btn-icon">🔓</span>
-      <span>Disattiva Allarme</span>
-    </button>
+      <button class="btn-single" onclick="inviaComando(URL_BASCULANTE_BOX, 'Basculante')">
+        <span class="btn-icon">🚗</span>
+        <span>Basculante</span>
+      </button>
+
+      <button class="btn-single" onclick="inviaComando(URL_ALLARME_ON, 'Attiva Allarme')">
+        <span class="btn-icon">🛡️</span>
+        <span>Attiva Allarme</span>
+      </button>
+
+      <button class="btn-single" onclick="inviaComando(URL_ALLARME_OFF, 'Disattiva Allarme')">
+        <span class="btn-icon">🔓</span>
+        <span>Disattiva Allarme</span>
+      </button>
+    </div>
   </div>
 
   <div id="status" class="status">In attesa...</div>
 
   <script>
+    // --- LINK SCENARI ---
+    const URL_SCENARIO_APRI   = "https://www.virtualsmarthome.xyz/url_routine_trigger/activate.php?trigger=f024dd63-c921-4786-9652-bf02d9ee44d4&token=0aaf39c0-ddb9-4ad1-b617-4b2725c474a8&response=html";
+    const URL_SCENARIO_CHIUDI = "https://www.virtualsmarthome.xyz/url_routine_trigger/activate.php?trigger=ceed55de-d0ca-417d-aa2b-e05ff2e4bc32&token=5e1e1179-d8a6-4837-ae6b-fd22596e01ee&response=html";
+
+    // --- LINK COMANDI SINGOLI ---
     const URL_LUCE_BOX       = "https://www.virtualsmarthome.xyz/url_routine_trigger/activate.php?trigger=67f866e7-72f0-4c6e-b1ed-dfca06733806&token=f65f88a7-dec4-4d25-a1f3-692f08934014&response=html";
     const URL_BASCULANTE_BOX = "https://www.virtualsmarthome.xyz/url_routine_trigger/activate.php?trigger=2d069424-9826-4239-9313-5a18954de579&token=0bc3386d-f881-4afb-8bbf-04d5b0aac0e0&response=html";
     const URL_ALLARME_ON     = "https://www.virtualsmarthome.xyz/url_routine_trigger/activate.php?trigger=030c1432-8458-49c8-adbf-4e21bdd952c8&token=2dc25059-1f32-4547-9af1-fb98e95d58b9&response=html";
