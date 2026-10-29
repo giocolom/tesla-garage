@@ -2,162 +2,265 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Tesla Garage Control</title>
   <style>
+    :root {
+      --bg-color: #0b0e14;
+      --card-bg: #161b22;
+      --card-border: #262c36;
+      --text-main: #f0f6fc;
+      --text-sub: #8b949e;
+      --accent-green: #10b981;
+      --accent-red: #ef4444;
+      --accent-blue: #3b82f6;
+      --accent-amber: #f59e0b;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
     }
+
     body {
-      background-color: #121212;
-      color: #ffffff;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      padding: 20px;
+      padding: 24px 16px;
     }
-    h1 {
-      font-size: 1.6rem;
-      margin-bottom: 20px;
-      color: #e0e0e0;
-      text-align: center;
-    }
-    .container {
+
+    .app-container {
       width: 100%;
-      max-width: 440px;
+      max-width: 420px;
       display: flex;
       flex-direction: column;
-      gap: 15px;
+      gap: 20px;
     }
-    
-    /* Scenari Principali */
-    .scenarios {
+
+    .header {
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: var(--text-main);
+    }
+
+    .header p {
+      font-size: 0.85rem;
+      color: var(--text-sub);
+      margin-top: 4px;
+    }
+
+    .section-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--text-sub);
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    /* Scenari Macro */
+    .scenarios-grid {
       display: flex;
       flex-direction: column;
       gap: 12px;
     }
+
     .btn-scenario {
-      padding: 18px;
-      font-size: 1.2rem;
-      font-weight: bold;
-      color: #ffffff;
-      border: 2px solid #333;
+      position: relative;
+      padding: 18px 20px;
       border-radius: 16px;
+      border: 1px solid var(--card-border);
       cursor: pointer;
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-      transition: all 0.2s ease;
+      gap: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      transition: transform 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+      overflow: hidden;
     }
+
+    .btn-scenario::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; bottom: 0;
+      width: 5px;
+    }
+
     .btn-apri {
-      background-color: #1b4d3e;
-      border-color: #10b981;
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, #161b22 100%);
+      border-color: rgba(16, 185, 129, 0.3);
     }
+    .btn-apri::before { background-color: var(--accent-green); }
+
     .btn-chiudi {
-      background-color: #4a151b;
-      border-color: #ef4444;
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.12) 0%, #161b22 100%);
+      border-color: rgba(239, 68, 68, 0.3);
+    }
+    .btn-chiudi::before { background-color: var(--accent-red); }
+
+    .btn-scenario:active {
+      transform: scale(0.97);
+    }
+
+    .btn-text {
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+    }
+
+    .btn-text .title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .btn-text .subtitle {
+      font-size: 0.8rem;
+      color: var(--text-sub);
+      margin-top: 2px;
     }
 
     /* Comandi Singoli */
-    .grid {
+    .singles-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
-      margin-top: 5px;
     }
+
     .btn-single {
-      padding: 16px 10px;
-      font-size: 1rem;
-      font-weight: 600;
-      color: #d1d5db;
-      background-color: #1e1e1e;
-      border: 1px solid #333333;
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
       border-radius: 14px;
+      padding: 16px;
       cursor: pointer;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
-    }
-    
-    .btn-scenario:active, .btn-single:active {
-      transform: scale(0.96);
-      filter: brightness(1.2);
-    }
-    .btn-icon {
-      font-size: 1.8rem;
+      gap: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      transition: transform 0.15s ease, border-color 0.15s ease;
     }
 
-    .status {
-      margin-top: 20px;
-      font-size: 1.1rem;
-      min-height: 25px;
-      text-align: center;
-      color: #888;
-      font-weight: 500;
+    .btn-single span {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-main);
     }
-    .success { color: #10b981; }
+
+    .btn-single:active {
+      transform: scale(0.95);
+      border-color: var(--accent-blue);
+      background-color: #1f2633;
+    }
+
+    /* Icone SVG */
+    .icon {
+      width: 28px;
+      height: 28px;
+      flex-shrink: 0;
+    }
+
+    .status-card {
+      margin-top: 8px;
+      background-color: #12161f;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 12px;
+      text-align: center;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text-sub);
+      min-height: 45px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.2s ease;
+    }
+
+    .status-card.success {
+      color: var(--accent-green);
+      border-color: rgba(16, 185, 129, 0.4);
+    }
   </style>
 </head>
 <body>
 
-  <h1>Garage Tesla</h1>
-
-  <div class="container">
-    <!-- Pulsanti Macro Scenari -->
-    <div class="scenarios">
-      <button class="btn-scenario btn-apri" onclick="inviaComando(URL_SCENARIO_APRI, 'Scenario APRI BOX')">
-        <span class="btn-icon">🔓</span>
-        <span>APRI BOX (Entrata)</span>
-      </button>
-
-      <button class="btn-scenario btn-chiudi" onclick="inviaComando(URL_SCENARIO_CHIUDI, 'Scenario CHIUDI BOX')">
-        <span class="btn-icon">🔒</span>
-        <span>CHIUDI BOX (Uscita)</span>
-      </button>
+  <div class="app-container">
+    <div class="header">
+      <h1>Garage Tesla</h1>
+      <p>Controllo Domotico</p>
     </div>
 
-    <!-- Pulsanti Comandi Singoli -->
-    <div class="grid">
-      <button class="btn-single" onclick="inviaComando(URL_LUCE_BOX, 'Luce Box')">
-        <span class="btn-icon">💡</span>
-        <span>Luce Box</span>
-      </button>
+    <!-- Scenari Automatici -->
+    <div>
+      <div class="section-title">Automazioni</div>
+      <div class="scenarios-grid">
+        <button class="btn-scenario btn-apri" onclick="inviaComando(URL_SCENARIO_APRI, 'Scenario APRI BOX')">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg>
+          <div class="btn-text">
+            <span class="title">APRI BOX</span>
+            <span class="subtitle">Disattiva allarme, luce ON, apre basculante</span>
+          </div>
+        </button>
 
-      <button class="btn-single" onclick="inviaComando(URL_BASCULANTE_BOX, 'Basculante')">
-        <span class="btn-icon">🚗</span>
-        <span>Basculante</span>
-      </button>
-
-      <button class="btn-single" onclick="inviaComando(URL_ALLARME_ON, 'Attiva Allarme')">
-        <span class="btn-icon">🛡️</span>
-        <span>Attiva Allarme</span>
-      </button>
-
-      <button class="btn-single" onclick="inviaComando(URL_ALLARME_OFF, 'Disattiva Allarme')">
-        <span class="btn-icon">🔓</span>
-        <span>Disattiva Allarme</span>
-      </button>
+        <button class="btn-scenario btn-chiudi" onclick="inviaComando(URL_SCENARIO_CHIUDI, 'Scenario CHIUDI BOX')">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          <div class="btn-text">
+            <span class="title">CHIUDI BOX</span>
+            <span class="subtitle">Luce OFF, chiude basculante, attiva allarme</span>
+          </div>
+        </button>
+      </div>
     </div>
+
+    <!-- Comandi Singoli -->
+    <div>
+      <div class="section-title">Comandi Singoli</div>
+      <div class="singles-grid">
+        <button class="btn-single" onclick="inviaComando(URL_LUCE_BOX, 'Luce Box')">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"></path><path d="M9 18h6"></path><path d="M10 22h4"></path></svg>
+          <span>Luce Box</span>
+        </button>
+
+        <button class="btn-single" onclick="inviaComando(URL_BASCULANTE_BOX, 'Basculante')">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+          <span>Basculante</span>
+        </button>
+
+        <button class="btn-single" onclick="inviaComando(URL_ALLARME_ON, 'Attiva Allarme')">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          <span>Attiva Allarme</span>
+        </button>
+
+        <button class="btn-single" onclick="inviaComando(URL_ALLARME_OFF, 'Disattiva Allarme')">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg>
+          <span>Disattiva Allarme</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Stato Invio -->
+    <div id="status" class="status-card">In attesa di comandi...</div>
   </div>
 
-  <div id="status" class="status">In attesa...</div>
-
   <script>
-    // --- LINK SCENARI ---
     const URL_SCENARIO_APRI   = "https://www.virtualsmarthome.xyz/url_routine_trigger/activate.php?trigger=f024dd63-c921-4786-9652-bf02d9ee44d4&token=0aaf39c0-ddb9-4ad1-b617-4b2725c474a8&response=html";
     const URL_SCENARIO_CHIUDI = "https://www.virtualsmarthome.xyz/url_routine_trigger/activate.php?trigger=ceed55de-d0ca-417d-aa2b-e05ff2e4bc32&token=5e1e1179-d8a6-4837-ae6b-fd22596e01ee&response=html";
 
-    // --- LINK COMANDI SINGOLI ---
     const URL_LUCE_BOX       = "https://www.virtualsmarthome.xyz/url_routine_trigger/activate.php?trigger=67f866e7-72f0-4c6e-b1ed-dfca06733806&token=f65f88a7-dec4-4d25-a1f3-692f08934014&response=html";
     const URL_BASCULANTE_BOX = "https://www.virtualsmarthome.xyz/url_routine_trigger/activate.php?trigger=2d069424-9826-4239-9313-5a18954de579&token=0bc3386d-f881-4afb-8bbf-04d5b0aac0e0&response=html";
     const URL_ALLARME_ON     = "https://www.virtualsmarthome.xyz/url_routine_trigger/activate.php?trigger=030c1432-8458-49c8-adbf-4e21bdd952c8&token=2dc25059-1f32-4547-9af1-fb98e95d58b9&response=html";
@@ -165,7 +268,7 @@
 
     function inviaComando(url, nomeComando) {
       const statusDiv = document.getElementById("status");
-      statusDiv.className = "status";
+      statusDiv.className = "status-card";
       statusDiv.innerText = "Inviando: " + nomeComando + "...";
 
       const iframe = document.createElement("iframe");
@@ -174,13 +277,13 @@
       document.body.appendChild(iframe);
 
       setTimeout(() => {
-        statusDiv.className = "status success";
-        statusDiv.innerText = "✓ " + nomeComando + " inviato!";
+        statusDiv.className = "status-card success";
+        statusDiv.innerText = "✓ " + nomeComando + " inviato con successo!";
         
         setTimeout(() => {
           document.body.removeChild(iframe);
-          statusDiv.className = "status";
-          statusDiv.innerText = "In attesa...";
+          statusDiv.className = "status-card";
+          statusDiv.innerText = "In attesa di comandi...";
         }, 2000);
       }, 800);
     }
