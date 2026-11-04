@@ -45,6 +45,97 @@
       box-shadow: inset 0 0 60px var(--flash-color, var(--accent-blue));
     }
 
+    /* OVERLAY PIN SCREEN */
+    #pin-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: #07090e;
+      z-index: 999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      transition: opacity 0.4s ease, visibility 0.4s ease;
+    }
+
+    #pin-overlay.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .pin-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+
+    .pin-dots {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 30px;
+    }
+
+    .pin-dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 2px solid var(--text-muted);
+      transition: all 0.2s ease;
+    }
+
+    .pin-dot.filled {
+      background: var(--tesla-red);
+      border-color: var(--tesla-red);
+      box-shadow: 0 0 12px rgba(232, 33, 39, 0.6);
+    }
+
+    .pin-dot.error {
+      animation: shake 0.3s ease;
+      background: var(--accent-red);
+      border-color: var(--accent-red);
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-8px); }
+      40%, 80% { transform: translateX(8px); }
+    }
+
+    .keypad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      width: 100%;
+      max-width: 280px;
+    }
+
+    .key-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      border-radius: 50%;
+      width: 72px;
+      height: 72px;
+      margin: 0 auto;
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: #ffffff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+    }
+
+    .key-btn:active {
+      transform: scale(0.9);
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    /* MAIN APP CONTAINER */
     .app-container {
       width: 100%;
       max-width: 440px;
@@ -53,13 +144,13 @@
       gap: 16px;
     }
 
-    /* Header Centrato */
     .header-center {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       gap: 6px;
+      position: relative;
     }
 
     .tesla-logo {
@@ -74,6 +165,18 @@
       letter-spacing: -0.2px;
       color: #ffffff;
     }
+
+    .btn-lock {
+      position: absolute;
+      right: 0;
+      top: 0;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      opacity: 0.6;
+      transition: opacity 0.2s;
+    }
+    .btn-lock:active { opacity: 1; }
 
     /* Widget Panel */
     .widget-panel {
@@ -126,7 +229,7 @@
       color: var(--text-main);
     }
 
-    /* Scenari Automatici (IMPATTO VISIVO ELEVATO) */
+    /* Scenari Automatici */
     .scenarios-grid {
       display: flex;
       flex-direction: column;
@@ -222,7 +325,7 @@
     .btn-apri.sending { box-shadow: 0 0 30px rgba(16, 185, 129, 0.6); }
     .btn-chiudi.sending { box-shadow: 0 0 30px rgba(239, 68, 68, 0.6); }
 
-    /* Comandi Singoli Compatti */
+    /* Comandi Singoli */
     .section-label {
       font-size: 0.7rem;
       text-transform: uppercase;
@@ -276,14 +379,49 @@
 </head>
 <body>
 
+  <!-- SCHERMATA SBLOCCO PIN -->
+  <div id="pin-overlay">
+    <div class="pin-header">
+      <svg class="tesla-logo" viewBox="0 0 342 342" fill="none">
+        <path fill="#e82127" d="M171 0C25.4 0 0 11.2 0 11.2l18.6 23.6s28.1-7.2 60.9-8.4c33.9-1.2 63.8 11.3 63.8 11.3l27.7 89.2 27.7-89.2s29.9-12.5 63.8-11.3c32.8 1.2 60.9 8.4 60.9 8.4l18.6-23.6S316.6 0 171 0zm-87.6 142.1l22.4 72.1 65.2 78.4 65.2-78.4 22.4-72.1s-19.6-7.8-49.3-7.8c-23.6 0-38.3 8.3-38.3 8.3L171 206l-20-63.4s-14.7-8.3-38.3-8.3c-29.7 0-49.3 7.8-49.3 7.8z"/>
+      </svg>
+      <div style="font-size: 1.1rem; font-weight: 600; margin-top: 6px;">Inserisci PIN</div>
+    </div>
+
+    <div class="pin-dots">
+      <div class="pin-dot" id="dot-0"></div>
+      <div class="pin-dot" id="dot-1"></div>
+      <div class="pin-dot" id="dot-2"></div>
+      <div class="pin-dot" id="dot-3"></div>
+    </div>
+
+    <div class="keypad">
+      <button class="key-btn" onclick="pressKey('1')">1</button>
+      <button class="key-btn" onclick="pressKey('2')">2</button>
+      <button class="key-btn" onclick="pressKey('3')">3</button>
+      <button class="key-btn" onclick="pressKey('4')">4</button>
+      <button class="key-btn" onclick="pressKey('5')">5</button>
+      <button class="key-btn" onclick="pressKey('6')">6</button>
+      <button class="key-btn" onclick="pressKey('7')">7</button>
+      <button class="key-btn" onclick="pressKey('8')">8</button>
+      <button class="key-btn" onclick="pressKey('9')">9</button>
+      <button class="key-btn" style="font-size: 1rem; color: var(--text-muted);" onclick="clearPin()">C</button>
+      <button class="key-btn" onclick="pressKey('0')">0</button>
+      <button class="key-btn" style="font-size: 1.2rem; color: var(--text-muted);" onclick="popKey()">⌫</button>
+    </div>
+  </div>
+
+  <!-- CONTENUTO PRINCIPALE -->
   <div class="app-container">
 
-    <!-- Header Centrato -->
     <div class="header-center">
       <svg class="tesla-logo" viewBox="0 0 342 342" fill="none">
         <path fill="#e82127" d="M171 0C25.4 0 0 11.2 0 11.2l18.6 23.6s28.1-7.2 60.9-8.4c33.9-1.2 63.8 11.3 63.8 11.3l27.7 89.2 27.7-89.2s29.9-12.5 63.8-11.3c32.8 1.2 60.9 8.4 60.9 8.4l18.6-23.6S316.6 0 171 0zm-87.6 142.1l22.4 72.1 65.2 78.4 65.2-78.4 22.4-72.1s-19.6-7.8-49.3-7.8c-23.6 0-38.3 8.3-38.3 8.3L171 206l-20-63.4s-14.7-8.3-38.3-8.3c-29.7 0-49.3 7.8-49.3 7.8z"/>
       </svg>
       <div class="car-title">Flashblack</div>
+      <button class="btn-lock" onclick="lockPage()" title="Blocca">
+        <svg style="width:20px;height:20px" viewBox="0 0 24 24" fill="none" stroke="#8b949e" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+      </button>
     </div>
 
     <!-- Widget Panel -->
@@ -297,7 +435,7 @@
       </div>
     </div>
 
-    <!-- Scenari Automatici (PULITI E D'IMPATTO) -->
+    <!-- Scenari Automatici -->
     <div class="scenarios-grid">
       <button class="btn-scenario btn-apri" onclick="inviaComando(this, URL_SCENARIO_APRI, '#10b981')">
         <div class="btn-scenario-content">
@@ -349,6 +487,63 @@
   </div>
 
   <script>
+    // --- GESTIONE PIN DI SICUREZZA ---
+    // IMPOSTA QUI IL TUO PIN PREFERITO (es: "1234")
+    const PIN_CORRETTO = "1208";
+    let currentPin = "";
+
+    function pressKey(num) {
+      if (currentPin.length < 4) {
+        currentPin += num;
+        updateDots();
+        if (currentPin.length === 4) {
+          setTimeout(verifyPin, 150);
+        }
+      }
+    }
+
+    function popKey() {
+      if (currentPin.length > 0) {
+        currentPin = currentPin.slice(0, -1);
+        updateDots();
+      }
+    }
+
+    function clearPin() {
+      currentPin = "";
+      updateDots();
+    }
+
+    function updateDots() {
+      for (let i = 0; i < 4; i++) {
+        const dot = document.getElementById(`dot-${i}`);
+        if (i < currentPin.length) {
+          dot.classList.add('filled');
+        } else {
+          dot.classList.remove('filled', 'error');
+        }
+      }
+    }
+
+    function verifyPin() {
+      if (currentPin === PIN_CORRETTO) {
+        document.getElementById('pin-overlay').classList.add('hidden');
+        clearPin();
+      } else {
+        for (let i = 0; i < 4; i++) {
+          document.getElementById(`dot-${i}`).classList.add('error');
+        }
+        setTimeout(() => {
+          clearPin();
+        }, 400);
+      }
+    }
+
+    function lockPage() {
+      document.getElementById('pin-overlay').classList.remove('hidden');
+      clearPin();
+    }
+
     // --- LINK SCENARI ---
     const URL_SCENARIO_APRI   = "https://www.virtualsmarthome.xyz/url_routine_trigger/activate.php?trigger=f024dd63-c921-4786-9652-bf02d9ee44d4&token=0aaf39c0-ddb9-4ad1-b617-4b2725c474a8&response=html";
     const URL_SCENARIO_CHIUDI = "https://www.virtualsmarthome.xyz/url_routine_trigger/activate.php?trigger=ceed55de-d0ca-417d-aa2b-e05ff2e4bc32&token=5e1e1179-d8a6-4837-ae6b-fd22596e01ee&response=html";
